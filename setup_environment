@@ -1,0 +1,4 @@
+#!/bin/bash
+wget http://pywebgraph.sourceforge.net/download/pywebgraph-2.72.tgz
+tar -xvf pywebgraph-2.72.tgz
+rm pywebgraph-2.72.tgz
