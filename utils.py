@@ -1,37 +1,31 @@
+from __future__ import division
 import sys
 ##
-import numpy as np
+import networkx as nx
 ##
-
-
-class Node(object):
-  def __init__(self, n, edges=None):
-    self.n = n
-    self.count = 0
-    self.edges = edges if edges else {}
-
-  def visits(self):
-    return np.random.uniform(0, 1000)
-
-  def reset(self):
-    self.count = 0
-
-  def __repr__(self):
-    return 'Node(n={}, edges={})'.format(self.n, self.edges)
 
 
 def read_input(data):
-  nodes = {}
+  G = nx.DiGraph()
   for line in data:
-    a, b = map(int, line.split(' -> '))
-    if a not in nodes:
-      nodes[a] = Node(a)
-    if b not in nodes:
-      nodes[b] = Node(b)
-    ##
-    nodes[a].edges[b] = 1
-  return nodes
+    a, b = map(int, line.strip().split(' -> '))
+    G.add_node(a)
+    G.add_node(a)
+    # DiGraph doesn't allow duplicate edges
+    G.add_edge(a, b, weight=1)
+  return G
+
+
+def normalize_outgoing(G):
+  for n in G.nodes_iter():
+    edges = G.out_edges(n, data=True)
+    z = sum(data['weight'] for u, v, data in edges)
+    for u, v, data in edges:
+      data['weight'] /= z
 
 
 if __name__ == '__main__':
-  print read_input(sys.stdin)
+  G = read_input(sys.stdin)
+  normalize_outgoing(G)
+  for n in G.nodes():
+    print 'n = {} has\n {}\n'.format(n, G.out_edges(n, data=True))
