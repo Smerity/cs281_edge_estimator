@@ -37,10 +37,10 @@ def powerlaw_visits(a=0.2, size=100, scalar=10000):
   return map(int, map(round, sorted(powerlaw.rvs(a, size=size) * scalar)))
 
 
-def create_sample(G, ordered=False):
+def create_sample(G, shuffled=False):
   n = G.number_of_nodes()
   powers = powerlaw_visits(size=n)
-  if ordered:
+  if shuffled:
     np.random.shuffle(powers)
   for n, incoming in zip(G.nodes(), powers):
     G.node[n]['enter'] = incoming
